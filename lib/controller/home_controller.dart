@@ -1,62 +1,59 @@
-// lib/controllers/contact_controller.dart
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../helper/database_helper.dart';
+
 import '../model/contact_model.dart';
 import '../services/firebase_services.dart';
 
 class ContactController extends GetxController {
-  RxList<ContactModal> contactList = <ContactModal>[].obs;
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  var contacts = <Contact>[].obs;
+  var isLoading = false.obs;
+  final DatabaseHelper _dbHelper = DatabaseHelper();
   final FirestoreService _firestoreService = FirestoreService();
-
-
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-    DbServices.dbServices.database;
-    contactDetailsShow();
+    loadContacts();
   }
 
+  void loadContacts() async {
+    isLoading.value = true;
 
-  Future<void> contactDetailsShow()
-  async {
-    List dataList = await DbServices.dbServices.showDatabase();
-    contactList.value = dataList.map((e) => ContactModal(e),).toList();
-    update();
-    contactList.refresh();
+    contacts.value = await _dbHelper.getContacts();
+    isLoading.value = false;
   }
 
-  void deleteContact(int index)
-  {
-    DbServices.dbServices.deleteContact(contactList[index].id);
-    contactList.removeAt(index);
-    update();
-    contactList.refresh();
+  void addContact(Contact contact) async {
+    await _dbHelper.insertContact(contact);
+    syncContactsToFirestore();
+    loadContacts();
   }
 
-
-  void updateDetails(int index)
-  {
-    txtName = TextEditingController(text: contactList[index].name);
-    txtUserEmail = TextEditingController(text: contactList[index].email);
-    txtMobile = TextEditingController(text: contactList[index].phoneNumber);
-    update();
+  void updateContact(Contact contact) async {
+    await _dbHelper.updateContact(contact);
+    syncContactsToFirestore();
+    loadContacts();
   }
 
-  void searchData(String value)
-  {
-    if(value.isNotEmpty || value!='')
-    {
-      contactList.value = contactList.where((contact) => contact.name.contains(value),).toList();
-    } else{
-      contactDetailsShow();
+  void deleteContact(int id) async {
+    await _dbHelper.deleteContact(id);
+    syncContactsToFirestore();
+    loadContacts();
+  }
+
+  Future<void> syncContactsToFirestore() async {
+    String userId = "currentUserId";
+    await _firestoreService.syncContacts(userId, contacts);
+  }
+
+  Future<void> fetchContactsFromFirestore() async {
+    String userId = "currentUserId";
+    var cloudContacts = await _firestoreService.getContacts(userId);
+
+    for (var contact in cloudContacts) {
+      await _dbHelper.insertContact(contact);
     }
-    update();
-    contactList.refresh();
-  }
 
+    loadContacts();
+  }
 }

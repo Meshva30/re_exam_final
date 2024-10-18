@@ -30,7 +30,7 @@ class AuthController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        Get.to(HomeScreen());
+        Get.to(ContactListScreen());
       }
     } catch (e) {
       Get.snackbar(

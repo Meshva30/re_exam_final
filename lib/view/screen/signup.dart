@@ -195,7 +195,7 @@ class SignupScreen extends StatelessWidget {
                   controller.txtPassword.clear();
                   controller.txtFirstName.clear();
 
-                  Get.to(HomeScreen());
+                  Get.to(ContactListScreen());
                 },
                 child: Container(
                   height: 55,

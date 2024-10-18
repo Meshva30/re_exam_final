@@ -1,26 +1,31 @@
 
-class ContactModal {
-  int id;
-  String name, phoneNumber, email;
+class Contact {
+  String? id;
+  String name;
+  String phoneNumber;
+  String email;
 
-  ContactModal._(
-      {required this.id, required this.name, required this.phoneNumber, required this.email});
+  Contact({
+    this.id,
+    required this.name,
+    required this.phoneNumber,
+    required this.email,
+  });
 
-  factory ContactModal(Map json)
-  {
-    return ContactModal._(id: json['id'],
-        name: json['name'],
-        phoneNumber: json['phoneNumber'],
-        email: json['email']);
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'email': email,
+    };
   }
 
-  Map<String, dynamic> mapToModal(ContactModal contact)
-  {
-    return {
-      'id':contact.id,
-      'name':contact.name,
-      'phoneNumber':contact.phoneNumber,
-      'email':contact.email,
-    };
+  factory Contact.fromMap(Map<String, dynamic> map) {
+    return Contact(
+      id: map['id']?.toString(),
+      name: map['name'],
+      phoneNumber: map['phoneNumber'],
+      email: map['email'],
+    );
   }
 }
