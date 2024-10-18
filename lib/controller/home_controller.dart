@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import '../helper/database_helper.dart';
-
 import '../model/contact_model.dart';
 import '../services/firebase_services.dart';
 
 class ContactController extends GetxController {
   var contacts = <Contact>[].obs;
+  var filteredContacts = <Contact>[].obs;
   var isLoading = false.obs;
   final DatabaseHelper _dbHelper = DatabaseHelper();
   final FirestoreService _firestoreService = FirestoreService();
@@ -18,8 +18,8 @@ class ContactController extends GetxController {
 
   void loadContacts() async {
     isLoading.value = true;
-
     contacts.value = await _dbHelper.getContacts();
+    filteredContacts.value = contacts;
     isLoading.value = false;
   }
 
@@ -35,10 +35,25 @@ class ContactController extends GetxController {
     loadContacts();
   }
 
-  void deleteContact(int id) async {
-    await _dbHelper.deleteContact(id);
-    syncContactsToFirestore();
-    loadContacts();
+  Future<void> deleteContact(String id) async {
+    int contactId = int.tryParse(id) ?? -1;
+    if (contactId != -1) {
+      await _dbHelper.deleteItem(contactId);
+      loadContacts();
+    } else {
+      print("Invalid ID: $id");
+    }
+  }
+
+  void searchContacts(String query) {
+    if (query.isEmpty) {
+      filteredContacts.value = contacts;
+    } else {
+      filteredContacts.value = contacts
+          .where((contact) =>
+          contact.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
   }
 
   Future<void> syncContactsToFirestore() async {

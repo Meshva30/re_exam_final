@@ -37,7 +37,7 @@ class DatabaseHelper {
     return await db.insert('contacts', contact.toMap());
   }
 
-  // database_helper.dart
+
   Future<List<Contact>> getContacts() async {
     Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('contacts');
@@ -62,12 +62,9 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> deleteContact(int id) async {
-    Database db = await database;
-    return await db.delete(
-      'contacts',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+  Future<void> deleteItem(int id) async {
+    final db = await database;
+    await db.delete('contacts', where: 'id = ?', whereArgs: [id]);
   }
+
 }

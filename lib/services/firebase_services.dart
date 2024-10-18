@@ -16,7 +16,7 @@ class FirestoreService {
 
     return snapshot.docs.map((doc) {
       final contact = Contact.fromMap(doc.data() as Map<String, dynamic>);
-      contact.id = doc.id; // Firestore document IDs are strings
+      contact.id = doc.id;
       return contact;
     }).toList();
   }

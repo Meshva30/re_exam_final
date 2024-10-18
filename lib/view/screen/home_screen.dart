@@ -12,6 +12,10 @@ class ContactListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(
+          Icons.menu,
+          color: Colors.white,
+        ),
         backgroundColor: Color(0xff3A6D8C),
         title: Text(
           'Contacts',
@@ -28,37 +32,49 @@ class ContactListScreen extends StatelessWidget {
         ],
         centerTitle: true,
       ),
-      body: Obx(
-        () => ListView.builder(
-          itemCount: _contactController.contacts.length,
-          itemBuilder: (context, index) {
-            final contact = _contactController.contacts[index];
-            return ListTile(
-              title: Text(contact.name),
-              subtitle: Text(contact.phoneNumber),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.redAccent),
-                    onPressed: () {
-                      if (contact.id != null) {
-                        _contactController.deleteContact(contact.id! as int);
-                      } else {
-                        Get.snackbar('Error', 'Contact ID is invalid.');
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => _showEditContactDialog(
-                        context, contact), // Open edit dialog on tap
-                  ),
-                ],
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (value) {
+                _contactController.searchContacts(value);
+              },
+              decoration: InputDecoration(
+                labelText: 'Search Contacts',
+                border: OutlineInputBorder(),
               ),
-            );
-          },
-        ),
+            ),
+          ),
+          Expanded(
+            child: Obx(
+              () => ListView.builder(
+                itemCount: _contactController.contacts.length,
+                itemBuilder: (context, index) {
+                  final contact = _contactController.contacts[index];
+                  return ListTile(
+                    title: Text(contact.name),
+                    subtitle: Text(contact.phoneNumber),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            icon: Icon(Icons.delete, color: Colors.redAccent),
+                            onPressed: () =>
+                                _contactController.deleteContact(contact.id!)),
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () =>
+                              _showEditContactDialog(context, contact),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xff3A6D8C),
