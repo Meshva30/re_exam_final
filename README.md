@@ -1,4 +1,6 @@
 
+https://github.com/user-attachments/assets/86fe7a44-e4ea-4c05-91e9-6f01ed505793
+
 
 # Contact  App
 
@@ -34,7 +36,10 @@ A Flutter application that manages your contacts efficiently, with local storage
  ![Screenshot 2024-10-18 222729](https://github.com/user-attachments/assets/020b9081-8d10-4d95-abd1-baabccba0a2c)
  ![Screenshot 2024-10-18 224916](https://github.com/user-attachments/assets/59c8a52c-2f67-4f0a-a0d2-8256e2f1ba2f)
 
-https://github.com/user-attachments/assets/b2a49eb3-08ce-4543-bb80-af1b514ad27b
+
+https://github.com/user-attachments/assets/98dd32ea-6c15-41df-9d47-d873a467c6bb
+
+
 </p>
 
 
